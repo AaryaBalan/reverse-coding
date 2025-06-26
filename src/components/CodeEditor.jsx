@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Play } from 'lucide-react';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
@@ -23,21 +23,15 @@ const supportedLanguages = {
 };
 
 
-const CodeEditor = ({ code = '', onResult, isDisabled = false }) => {
+const CodeEditor = () => {
     const [language, setLanguage] = useState('python');
     const [isExecuting, setIsExecuting] = useState(false);
     const [editorCode, setEditorCode] = useState('');
     const editorRef = useRef(null);
     const [result, setResult] = useState(null);
 
-    // Set reversed code on mount or when input code changes
-    useEffect(() => {
-        if (typeof code === 'string') {
-            setEditorCode(code.split('').reverse().join(''));
-        }
-    }, [code]);
-
     const executeCode = async (code, language) => {
+        setIsExecuting(true)
         const languageMap = {
             python: "python",
             cpp: "cpp",
@@ -59,7 +53,6 @@ const CodeEditor = ({ code = '', onResult, isDisabled = false }) => {
             const { data } = await axios.post("https://emkc.org/api/v2/piston/execute", requestBody, {
                 headers: { "Content-Type": "application/json" },
             });
-            console.log(data, data.run.stdout.length)
             if (data.run.stdout.length) {
                 setResult(prev => ({ ...prev, output: data.run.output, success: true }))
             }
@@ -68,6 +61,8 @@ const CodeEditor = ({ code = '', onResult, isDisabled = false }) => {
             }
         } catch (error) {
             setResult(prev => ({ ...prev, error: 'internal error', success: false }))
+        } finally {
+            setIsExecuting(false)
         }
     };
 
@@ -77,31 +72,14 @@ const CodeEditor = ({ code = '', onResult, isDisabled = false }) => {
         const key = e.key;
 
         setEditorCode(prev => {
-            if (key === 'Enter') return '\n' + prev;
+            if (key === 'Enter') return '\n' + prev
             if (key === 'Backspace') return prev.slice(1);
             if (key === ' ') return " " + prev;
-            if (key === '$') return '';
             if (key.length === 1 && key.match(/[\x20-\x7E]/)) {
                 return key + prev;
             }
             return prev;
         });
-    };
-
-    const handleRunCode = async () => {
-        if (isDisabled) return;
-        setIsExecuting(true);
-        try {
-            const result = await executeCode(editorCode, language);
-            if (onResult) onResult(result);
-        } catch (error) {
-            if (onResult) onResult({
-                success: false,
-                output: null,
-                error: `Execution failed: ${error.message}`,
-            });
-        }
-        setIsExecuting(false);
     };
 
     return (
@@ -113,7 +91,6 @@ const CodeEditor = ({ code = '', onResult, isDisabled = false }) => {
                         className="bg-gray-800 text-cyan-400 p-1 rounded outline-none"
                         value={language}
                         onChange={(e) => setLanguage(e.target.value)}
-                        disabled={isDisabled}
                     >
                         {Object.keys(supportedLanguages).map((lang) => (
                             <option key={lang} value={lang}>
@@ -138,11 +115,11 @@ const CodeEditor = ({ code = '', onResult, isDisabled = false }) => {
 
             <div className="flex justify-end mb-5 mr-5">
                 <button
-                    onClick={handleRunCode}
-                    disabled={isExecuting || isDisabled}
+                    onClick={() => executeCode(editorCode, language)}
+                    disabled={isExecuting}
                     className={`bg-cyan-400 text-gray-900 px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer
                     ${isExecuting ? 'opacity-50 cursor-not-allowed' : ''} 
-                    ${isDisabled ? 'bg-gray-600 cursor-not-allowed text-cyan-400' : 'hover:bg-cyan-500'}`}
+                    `}
                 >
                     <Play size={16} />
                     {isExecuting ? 'Running...' : 'Run Code'}
