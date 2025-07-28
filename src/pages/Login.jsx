@@ -1,55 +1,113 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import SplitText from '../components/animations/split-text';
+import LetterGlitch from '../components/animations/letterGlitch';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
-   const Navigate = useNavigate()
+   const [time, setTime] = useState(new Date());
 
-   const [userDetails, setUserDetails] = useState({
-      username: '',
-      password: ''
-   })
-
-   const handleLoginInput = (e) => {
-      setUserDetails(prev => ({
-         ...prev,
-         [e.target.name]: e.target.value
-      }))
-   }
-
-   const handleSubmit = (e) => {
-      e.preventDefault()
-      // todo add logic
-      Navigate('/')
-   }
+   useEffect(() => {
+      const interval = setInterval(() => setTime(new Date()), 1000);
+      return () => clearInterval(interval);
+   }, []); const secDeg = time.getSeconds() * 6;
+   const minDeg = time.getMinutes() * 6 + time.getSeconds() * 0.1;
+   const hourDeg = ((time.getHours() % 12) / 12) * 360 + (time.getMinutes() / 60) * 30;
 
    return (
-      <div>
-         <div className='bg-[#131324] min-h-screen w-full flex justify-center items-center px-4 py-8'>
-            <div className='bg-[#101828] w-full max-w-md rounded-lg p-8 border-2 border-dashed border-[#00d3f3]'>
-               <form className='flex flex-col gap-y-5' onSubmit={(e) => handleSubmit(e)}>
-                  <div className='text-5xl font-extrabold text-[#00d3f3] self-center mb-7'>Login</div>
-                  <input type="text" name="username" placeholder='Username'
-                     className='border border-[#00d3f3] p-2 outline-none rounded-md text-white font-bold'
-                     onChange={(e) => handleLoginInput(e)}
-                     value={userDetails.username}
-                     required
-                  />
-                  <input type="password" name="password" placeholder='Password'
-                     className='border border-[#00d3f3] p-2 outline-none rounded-md text-white font-bold'
-                     onChange={(e) => handleLoginInput(e)}
-                     value={userDetails.password}
-                     required
-                  />
-                  <button type="submit"
-                     className='bg-[#00d3f3] p-2 rounded cursor-pointer text-[#131324]'
+      <div style={{ width: '100%', height: '100vh', position: 'relative', background: 'black' }}>
+         <LetterGlitch glitchSpeed={50} centerVignette={true} outerVignette={false} smooth={true} />
+
+         {/* Center Modal */}
+         <div
+            style={{
+               position: 'absolute',
+               top: '50%',
+               left: '50%',
+               transform: 'translate(-50%, -50%)',
+               width: '100%',
+               display: 'flex',
+               justifyContent: 'center',
+               alignItems: 'center',
+               zIndex: 2,
+            }}
+         >
+            <div className="w-full  max-w-md px-4">
+               <div
+                  className="relative backdrop-blur-sm rounded-lg px-8 py-20 border-2 border-dashed border-[#00d3f3] flex flex-col items-center overflow-hidden"
+                  style={{
+                     backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                  }}
+               >
+                  {/* SVG Clock Background in Modal */}
+                  <svg
+                     viewBox="0 0 200 200"
+                     style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%) scale(1.5)',
+                        opacity: 0.25,
+                        zIndex: 0,
+                     }}
                   >
-                     Submit
-                  </button>
-               </form>
+                     <circle cx="100" cy="100" r="95" stroke="#00d3f3" strokeWidth="3" fill="none" />
+                     {[...Array(12)].map((_, i) => (
+                        <line
+                           key={i}
+                           x1={100 + 85 * Math.sin((i * 30 * Math.PI) / 180)}
+                           y1={100 - 85 * Math.cos((i * 30 * Math.PI) / 180)}
+                           x2={100 + 90 * Math.sin((i * 30 * Math.PI) / 180)}
+                           y2={100 - 90 * Math.cos((i * 30 * Math.PI) / 180)}
+                           stroke="#00d3f3"
+                           strokeWidth="2"
+                        />
+                     ))}
+                     <line
+                        x1="100"
+                        y1="100"
+                        x2={100 + 40 * Math.sin((hourDeg * Math.PI) / 180)}
+                        y2={100 - 40 * Math.cos((hourDeg * Math.PI) / 180)}
+                        stroke="#00d3f3"
+                        strokeWidth="4"
+                     />
+                     <line
+                        x1="100"
+                        y1="100"
+                        x2={100 + 60 * Math.sin((minDeg * Math.PI) / 180)}
+                        y2={100 - 60 * Math.cos((minDeg * Math.PI) / 180)}
+                        stroke="#00d3f3"
+                        strokeWidth="3"
+                     />
+                     <line
+                        x1="100"
+                        y1="100"
+                        x2={100 + 70 * Math.sin((secDeg * Math.PI) / 180)}
+                        y2={100 - 70 * Math.cos((secDeg * Math.PI) / 180)}
+                        stroke="red"
+                        strokeWidth="1"
+                     />
+                  </svg>
+
+                  {/* Modal Content */}
+                  <div className="relative z-10 w-full flex flex-col items-center">
+                     <p className="text-5xl font-extrabold text-center text-[#00d3f3] mb-2">
+                        Tech Fiesta 2025
+                     </p>
+                     <p className="text-3xl font-bold text-center text-[#00d3f3] mb-6">
+                        Reverse Coding
+                     </p>
+                     <Link
+                        to="/code"
+                        className="bg-[#00d3f3] px-6 py-2 rounded text-[#131324] font-bold text-lg cursor-pointer hover:bg-[#00b3d3] transition-colors duration-300"
+                     >
+                        Start
+                     </Link>
+                  </div>
+               </div>
             </div>
          </div>
       </div>
-   )
-}
+   );
+};
 
-export default Login
+export default Login;

@@ -19,7 +19,9 @@
     "@uiw/react-codemirror": "^4.23.13",
     "axios": "^1.10.0",
     "codemirror": "^6.0.2",
+    "gsap": "^3.13.0",
     "lucide-react": "^0.523.0",
+    "ogl": "^1.0.11",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
@@ -27,6 +29,7 @@
     "react-scripts": "5.0.1",
     "react-toastify": "^11.0.5",
     "tailwindcss": "^4.1.10",
+    "use-timer": "^2.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

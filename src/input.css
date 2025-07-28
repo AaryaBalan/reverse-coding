@@ -1,10 +1,85 @@
 @import "tailwindcss";
 
-::-webkit-scrollbar{
+/* Scrollbar Styling */
+::-webkit-scrollbar {
     width: 2px;
     background-color: #3b3b3f;
 }
 
-::-webkit-scrollbar-thumb{
+::-webkit-scrollbar-thumb {
     background-color: cyan;
+}
+
+.portal-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 50;
+}
+
+.portal-1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    height: 500px;
+    transform: translate(-50%, -50%);
+    border: 4px solid #00d3f3;
+    border-radius: 50%;
+    opacity: 0.15;
+    filter: blur(2px);
+    box-shadow: 0 0 50px #00d3f3;
+    background: radial-gradient(circle at center, #0a0f1a 40%, transparent 100%);
+    transition: transform 1s ease-in-out;
+}
+
+.portal-2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 300px;
+    transform: translate(-50%, -50%);
+    border: 4px solid #00d3f3;
+    border-radius: 50%;
+    opacity: 0.15;
+    filter: blur(2px);
+    box-shadow: 0 0 50px #00d3f3;
+    background: radial-gradient(circle at center, #0a0f1a 40%, transparent 100%);
+    transition: transform 1s ease-in-out;
+}
+
+/* Base Clock Hand */
+.clock-hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    border-radius: 2px;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Hour Hand */
+.hour-hand {
+    width: 6px;
+    height: 140px;
+    background-color: #00bcd4;
+}
+
+/* Minute Hand */
+.minute-hand {
+    width: 4px;
+    height: 200px;
+    background-color: #00eaff;
+}
+
+/* Second Hand - fast, thin, glowy */
+.second-hand {
+    width: 2px;
+    height: 240px;
+    background-color: #00d3f3;
+    box-shadow: 0 0 10px #00d3f3;
 }
