@@ -44,10 +44,9 @@ const Navbar = () => {
                 <div className="p-6 mt-10">
                     <h2 className="text-2xl font-bold mb-6">Questions</h2>
                     <ul className="flex flex-col gap-y-3">
-                        <li className="hover:text-gray-300 hover:scale-105 transition-all cursor-pointer">question 1</li>
-                        <li className="hover:text-gray-300 hover:scale-105 transition-all cursor-pointer">question 1</li>
-                        <li className="hover:text-gray-300 hover:scale-105 transition-all cursor-pointer">question 1</li>
-                        <li className="hover:text-gray-300 hover:scale-105 transition-all cursor-pointer">question 1</li>
+                        <a href='/code/easy' className="hover:text-gray-300 hover:scale-105 transition-all cursor-pointer">Easy</a>
+                        <a href='/code/medium' className="hover:text-gray-300 hover:scale-105 transition-all cursor-pointer">Medium</a>
+                        <a href='/code/hard' className="hover:text-gray-300 hover:scale-105 transition-all cursor-pointer">Hard</a>
                     </ul>
                 </div>
             </div>

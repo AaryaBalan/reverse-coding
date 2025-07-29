@@ -97,7 +97,7 @@ const Login = () => {
                         Reverse Coding
                      </p>
                      <Link
-                        to="/code"
+                        to="/code/easy"
                         className="bg-[#00d3f3] px-6 py-2 rounded text-[#131324] font-bold text-lg cursor-pointer hover:bg-[#00b3d3] transition-colors duration-300"
                      >
                         Start

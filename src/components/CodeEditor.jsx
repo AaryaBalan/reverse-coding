@@ -7,6 +7,7 @@ import { cpp } from '@codemirror/lang-cpp';
 import { java } from '@codemirror/lang-java';
 import { githubDark } from '@uiw/codemirror-theme-github';
 import axios from 'axios';
+import { easyFunction, hardFunction, mediumFunction } from './answers';
 
 const languageExtensions = {
     python: python(),
@@ -22,14 +23,16 @@ const supportedLanguages = {
     javascript: "JavaScript",
 };
 
-const CodeEditor = () => {
+const CodeEditor = ({ input, level }) => {
     const [language, setLanguage] = useState('python');
     const [isExecuting, setIsExecuting] = useState(false);
     const [editorCode, setEditorCode] = useState('');
     const editorRef = useRef(null);
     const [result, setResult] = useState(null);
+    const [method, setMethod] = useState(() => easyFunction);
 
     const executeCode = async (code, language) => {
+
         setIsExecuting(true);
         const languageMap = {
             python: "python",
@@ -40,10 +43,24 @@ const CodeEditor = () => {
 
         const apiLanguage = languageMap[language] || language;
 
+        // Add input handling syntax based on language using the input prop
+        let finalCode = code;
+        if (input) {
+            if (apiLanguage === "python") {
+                finalCode = `n = ${input}\n${code}`;
+            } else if (apiLanguage === "cpp") {
+                finalCode = `int n = ${input};\n${code}`;
+            } else if (apiLanguage === "java") {
+                finalCode = `int n = ${input};\n${code}`;
+            } else if (apiLanguage === "javascript") {
+                finalCode = `const n = ${input};\n${code}`;
+            }
+        }
+
         const requestBody = {
             language: apiLanguage,
             version: "*",
-            files: [{ name: "main", content: code }],
+            files: [{ name: "main", content: finalCode }],
             stdin: "",
             args: [],
         };
@@ -68,6 +85,17 @@ const CodeEditor = () => {
             setIsExecuting(false);
         }
     };
+
+    useEffect(() => {
+        if (level === 'easy') {
+            setMethod(() => easyFunction);
+        } else if (level === 'medium') {
+            setMethod(() => mediumFunction);
+        } else if (level === 'hard') {
+            setMethod(() => hardFunction);
+        }
+    }, [level])
+    console.log(level)
 
     useEffect(() => {
         const view = editorRef.current?.view;
@@ -174,8 +202,14 @@ const CodeEditor = () => {
                     <div className={`font-semibold w-fit px-3 py-1 rounded text-white mb-2 ${result.success ? 'bg-green-400' : 'bg-red-500'}`}>
                         {result.success ? 'Output:' : 'Error:'}
                     </div>
-                    <pre className={`whitespace-pre-wrap text-sm ${result.success ? 'text-green-400' : 'text-red-500'} font-bold`}>
+                    <pre className={`whitespace-pre-wrap text-xl pt-3 ${result.success ? 'text-green-400' : 'text-red-500'} font-bold`}>
                         {result.success ? result.output : result.error}
+                    </pre>
+
+                    <pre className='flex flex-col gap-y-2 pt-4 text-lg'>
+                        <span>Input = {input}</span>
+                        <span>{`Expected Output: ${method(input)}`}</span>
+                        <span>{result.success ? result.output == method(input) ? '✅ Correct Output' : '❌ Incorrect Output' : ''}</span>
                     </pre>
                 </div>
             )}
