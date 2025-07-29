@@ -52,15 +52,23 @@ const Dashboard = () => {
     //     };
     // }, []); 
     const { level } = useParams()
-    const [input, setInput] = React.useState(0);
+    const [inputs, setInputs] = React.useState([0]);
+    const [time, setTime] = React.useState(0);
+
     useEffect(() => {
         // Set input based on level
         if (level === 'easy') {
-            setInput(Math.floor(Math.random() * 100) + 1); // Random input for easy level
+            setInputs(
+                Array.from({ length: 5 }, () => Math.floor(Math.random() * 1000) + 1)
+            ); // Random input for easy level
         } else if (level === 'medium') {
-            setInput(Math.floor(Math.random() * 100) + 1); // Random input for medium level
+            setInputs(
+                Array.from({ length: 5 }, () => Math.floor(Math.random() * 100) + 1)
+            ); // Random input for medium level
         } else if (level === 'hard') {
-            setInput(Math.floor(Math.random() * 100) + 1); // Random input for hard level
+            setInputs(
+                Array.from({ length: 5 }, () => Math.floor(Math.random() * 1000) + 1)
+            ); // Random input for hard level
         }
     }, [level]);
 
@@ -70,11 +78,11 @@ const Dashboard = () => {
             <div className="relative z-10 flex flex-col h-full">
                 <Navbar />
                 <div className='flex w-full justify-between items-center px-6 py-4'>
-                    <Timer start={true} onComplete={() => alert('Time is up!')} />
+                    <Timer setTime={setTime} time={time} start={true} onComplete={() => alert('Time is up!')} />
                 </div>
                 <div className="flex-1 flex px-6 py-4 gap-4 overflow-hidden">
                     <Question level={level} />
-                    <CodeEditor level={level} input={input} />
+                    <CodeEditor time={time} level={level} inputs={inputs} />
                 </div>
             </div>
         </div>

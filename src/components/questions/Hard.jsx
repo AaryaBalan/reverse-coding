@@ -10,7 +10,8 @@ export default function Hard() {
             <div className="space-y-2">
                 <p className="text-base md:text-lg">
                     Given an integer <code className="bg-gray-800 px-2 py-1 rounded text-red-300">n</code>, determine whether it is an <strong>Armstrong Number</strong>.
-                    An <strong>Armstrong number</strong> is a number that is equal to the sum of its digits each raised to the power of the number of digits.
+                    An <strong>Armstrong number</strong> is a number that is equal to the sum of its digits each raised to the power of the number of digits. <br />
+                    Return 1 for true and 0 for false.
                 </p>
             </div>
 
@@ -28,7 +29,7 @@ export default function Hard() {
                     <p className="font-medium text-red-300">Example 1:</p>
                     <p className="text-sm">
                         <strong>Input:</strong> <code className="text-red-300">n = 153</code><br />
-                        <strong>Output:</strong> <code className="text-red-300">true</code><br />
+                        <strong>Output:</strong> <code className="text-red-300">1</code><br />
                         <strong>Explanation:</strong> 1³ + 5³ + 3³ = 153
                     </p>
                 </div>
@@ -37,7 +38,7 @@ export default function Hard() {
                     <p className="font-medium text-red-300">Example 2:</p>
                     <p className="text-sm">
                         <strong>Input:</strong> <code className="text-red-300">n = 9474</code><br />
-                        <strong>Output:</strong> <code className="text-red-300">true</code><br />
+                        <strong>Output:</strong> <code className="text-red-300">1</code><br />
                         <strong>Explanation:</strong> 9⁴ + 4⁴ + 7⁴ + 4⁴ = 9474
                     </p>
                 </div>
@@ -46,7 +47,7 @@ export default function Hard() {
                     <p className="font-medium text-red-300">Example 3:</p>
                     <p className="text-sm">
                         <strong>Input:</strong> <code className="text-red-300">n = 123</code><br />
-                        <strong>Output:</strong> <code className="text-red-300">false</code>
+                        <strong>Output:</strong> <code className="text-red-300">0</code>
                     </p>
                 </div>
             </div>

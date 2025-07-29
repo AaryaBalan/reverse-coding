@@ -51,16 +51,16 @@ export default function Medium() {
             </div>
 
             <div>
-                <h2 className="text-xl font-semibold text-gray-300">Constraints</h2>
+                <h2 className="text-xl font-semibold text-gray-300">Input</h2>
                 <ul className="list-disc list-inside text-sm md:text-base text-gray-300 mt-2">
-                    <li>0 ≤ n ≤ 10⁴</li>
+                    <li>You don't need to take input from the user. Use the variable <code className="text-yellow-300">n</code> which is already defined in the code.</li>
                 </ul>
             </div>
 
             <div>
-                <h2 className="text-xl font-semibold text-gray-300">Input</h2>
+                <h2 className="text-xl font-semibold text-gray-300">Constraints</h2>
                 <ul className="list-disc list-inside text-sm md:text-base text-gray-300 mt-2">
-                    <li>You don't need to take input from the user. Use the variable <code className="text-yellow-300">n</code> which is already defined in the code.</li>
+                    <li>0 ≤ n ≤ 10⁴</li>
                 </ul>
             </div>
 

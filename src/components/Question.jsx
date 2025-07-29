@@ -46,7 +46,7 @@ const Question = ({ level = 'easy' }) => {
             <AnalogClock containerRef={containerRef} />
 
             <div className='absolute top-0 p-4'>
-                <h2 className={`text-xl font-semibold ${levelStyle.color} mb-10`}>{levelStyle.text}</h2>
+                <h2 className={`text-xl font-semibold ${levelStyle.color} mb-3`}>{levelStyle.text}</h2>
                 <div className='text-white'>
                     {renderQuestionComponent()}
                 </div>

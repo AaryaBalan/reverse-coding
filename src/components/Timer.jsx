@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const Timer = () => {
-    const [time, setTime] = useState(0);
+const Timer = ({ setTime, time }) => {
 
     useEffect(() => {
         // Get saved timer data from localStorage

@@ -8,6 +8,7 @@ import { java } from '@codemirror/lang-java';
 import { githubDark } from '@uiw/codemirror-theme-github';
 import axios from 'axios';
 import { easyFunction, hardFunction, mediumFunction } from './answers';
+import { formatTime } from './formatTime';
 
 const languageExtensions = {
     python: python(),
@@ -23,17 +24,22 @@ const supportedLanguages = {
     javascript: "JavaScript",
 };
 
-const CodeEditor = ({ input, level }) => {
+const CodeEditor = ({ inputs, level, time }) => {
     const [language, setLanguage] = useState('python');
     const [isExecuting, setIsExecuting] = useState(false);
     const [editorCode, setEditorCode] = useState('');
+    const [outputResults, setOutputResults] = useState([]);
     const editorRef = useRef(null);
-    const [result, setResult] = useState(null);
     const [method, setMethod] = useState(() => easyFunction);
+    const [error, setError] = useState('');
 
-    const executeCode = async (code, language) => {
+    useEffect(() => {
+        if (level === 'easy') setMethod(() => easyFunction);
+        else if (level === 'medium') setMethod(() => mediumFunction);
+        else if (level === 'hard') setMethod(() => hardFunction);
+    }, [level]);
 
-        setIsExecuting(true);
+    const executeCode = async (code, language, input) => {
         const languageMap = {
             python: "python",
             cpp: "cpp",
@@ -43,9 +49,8 @@ const CodeEditor = ({ input, level }) => {
 
         const apiLanguage = languageMap[language] || language;
 
-        // Add input handling syntax based on language using the input prop
         let finalCode = code;
-        if (input) {
+        if (input !== undefined) {
             if (apiLanguage === "python") {
                 finalCode = `n = ${input}\n${code}`;
             } else if (apiLanguage === "cpp") {
@@ -69,33 +74,51 @@ const CodeEditor = ({ input, level }) => {
             const { data } = await axios.post(
                 "https://emkc.org/api/v2/piston/execute",
                 requestBody,
-                {
-                    headers: { "Content-Type": "application/json" },
-                }
+                { headers: { "Content-Type": "application/json" } }
             );
 
-            if (data.run.stdout.length) {
-                setResult({ output: data.run.output, success: true });
-            } else if (data.run.stderr.length) {
-                setResult({ error: data.run.stderr, success: false });
+            // setError to error
+            if (!data.run.stdout.length) {
+                setError(data.run.stderr);
             }
+
+            return data.run.stdout.length ? data.run.output : data.run.stderr;
         } catch (error) {
-            setResult({ error: 'Internal error', success: false });
-        } finally {
-            setIsExecuting(false);
+            return 'Internal error';
         }
     };
 
-    useEffect(() => {
-        if (level === 'easy') {
-            setMethod(() => easyFunction);
-        } else if (level === 'medium') {
-            setMethod(() => mediumFunction);
-        } else if (level === 'hard') {
-            setMethod(() => hardFunction);
+    const runTests = async () => {
+        setIsExecuting(true);
+        const results = [];
+
+        for (let i = 0; i < inputs.length; i++) {
+            const input = inputs[i];
+            const expected = method(input).toString().trim();
+            const output = await executeCode(editorCode, language, input);
+            const isCorrect = +output.trim() === +expected;
+            results.push({
+                input,
+                expected,
+                output: +output.trim(),
+                isCorrect,
+            });
         }
-    }, [level])
-    console.log(level)
+
+        const trueValues = results.filter(res => res.isCorrect);
+        if (trueValues.length === 5) {
+            if (!localStorage.getItem(`${level}-time`)) {
+                localStorage.setItem(`${level}-time`, formatTime(time));
+            }
+
+            if (localStorage.getItem('easy-time') && localStorage.getItem('medium-time') && localStorage.getItem('hard-time')) {
+                window.location.href = '/completed';
+            }
+        }
+
+        setOutputResults(results);
+        setIsExecuting(false);
+    };
 
     useEffect(() => {
         const view = editorRef.current?.view;
@@ -116,21 +139,16 @@ const CodeEditor = ({ input, level }) => {
                 let currentLine = lines[lineIndex] || '';
 
                 if (key === 'Backspace') {
-                    // 🔙 Delete first character of the line
                     currentLine = currentLine.slice(1);
-                    lines[lineIndex] = currentLine;
                 } else if (key === 'Enter') {
-                    // ⏎ Insert new line BELOW current line
                     lines.splice(lineIndex + 1, 0, '');
                 } else {
-                    // 🔤 Add character to the FRONT (reverse typing)
                     currentLine = key + currentLine;
-                    lines[lineIndex] = currentLine;
                 }
 
+                lines[lineIndex] = currentLine;
                 setEditorCode(lines.join('\n'));
 
-                // After pressing Enter, move the cursor to the next line
                 if (key === 'Enter') {
                     setTimeout(() => {
                         const nextLineStartPos = lines.slice(0, lineIndex + 2).join('\n').length + 1;
@@ -147,7 +165,7 @@ const CodeEditor = ({ input, level }) => {
         dom.addEventListener('keydown', handleKeyDown);
         return () => dom.removeEventListener('keydown', handleKeyDown);
     }, [editorCode]);
-
+    console.log(outputResults)
 
     return (
         <div className="w-1/2 space-y-4 flex flex-col max-h-[calc(100vh-100px)] overflow-hidden border-2 border-dashed border-[#00d3f3]">
@@ -186,7 +204,7 @@ const CodeEditor = ({ input, level }) => {
 
             <div className="flex justify-end mb-5 mr-5">
                 <button
-                    onClick={() => executeCode(editorCode, language)}
+                    onClick={runTests}
                     disabled={isExecuting}
                     className={`bg-cyan-400 text-gray-900 px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer
                         ${isExecuting ? 'opacity-50 cursor-not-allowed' : ''}
@@ -197,20 +215,23 @@ const CodeEditor = ({ input, level }) => {
                 </button>
             </div>
 
-            {result && (result.output || result.error) && (
+            {error.length !== 0 && (
                 <div className="bg-[#101828] text-white mt-4 p-4 rounded-lg max-h-96 overflow-auto border border-cyan-400">
-                    <div className={`font-semibold w-fit px-3 py-1 rounded text-white mb-2 ${result.success ? 'bg-green-400' : 'bg-red-500'}`}>
-                        {result.success ? 'Output:' : 'Error:'}
-                    </div>
-                    <pre className={`whitespace-pre-wrap text-xl pt-3 ${result.success ? 'text-green-400' : 'text-red-500'} font-bold`}>
-                        {result.success ? result.output : result.error}
-                    </pre>
+                    <pre className='text-red-400'>{error}</pre>
+                </div>
+            )}
 
-                    <pre className='flex flex-col gap-y-2 pt-4 text-lg'>
-                        <span>Input = {input}</span>
-                        <span>{`Expected Output: ${method(input)}`}</span>
-                        <span>{result.success ? result.output == method(input) ? '✅ Correct Output' : '❌ Incorrect Output' : ''}</span>
-                    </pre>
+            {(outputResults.length > 0 && error.length === 0) && (
+                <div className="bg-[#101828] text-white mt-4 p-4 rounded-lg max-h-96 overflow-auto border border-cyan-400">
+                    {outputResults.map((res, index) => (
+                        <pre key={index} className="flex flex-col gap-y-2 text-lg bg-gray-800 p-4 border border-gray-700 my-5 rounded-md">
+                            <span className='text-[#05df72]'>Testcase {index + 1}</span>
+                            <span>Input = {res.input}</span>
+                            <span>Expected Output: {res.expected}</span>
+                            <span>Actual Output: {res.output}</span>
+                            <span>{res.isCorrect ? '✅ Correct Output' : '❌ Incorrect Output'}</span>
+                        </pre>
+                    ))}
                 </div>
             )}
         </div>

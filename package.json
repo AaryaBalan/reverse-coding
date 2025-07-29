@@ -18,6 +18,7 @@
     "@uiw/codemirror-theme-github": "^4.23.13",
     "@uiw/react-codemirror": "^4.23.13",
     "axios": "^1.10.0",
+    "big-integer": "^1.6.52",
     "codemirror": "^6.0.2",
     "gsap": "^3.13.0",
     "lucide-react": "^0.523.0",

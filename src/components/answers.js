@@ -3,11 +3,11 @@ export function easyFunction(n) {
 }
 
 export function mediumFunction(n) {
-    const fib = [0, 1];
-    for (let i = 2; i < n; i++) {
+    const fib = [0n, 1n];
+    for (let i = 2; i <= n; i++) {
         fib[i] = fib[i - 1] + fib[i - 2];
     }
-    return fib[fib.length - 1]; // Return the nth Fibonacci number
+    return fib[n]; // Return the nth Fibonacci number
 }
 
 export function hardFunction(n) {
@@ -15,5 +15,8 @@ export function hardFunction(n) {
     const digits = n.toString().split('').map(Number);
     const numDigits = digits.length;
     const sum = digits.reduce((acc, digit) => acc + Math.pow(digit, numDigits), 0);
-    return sum === n;
+    if (sum === n) {
+        return 1;
+    }
+    return 0;
 }
