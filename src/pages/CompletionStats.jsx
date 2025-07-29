@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import LetterGlitch from '../components/animations/letterGlitch';
 
 const CompletionStats = () => {
     const navigate = useNavigate();
@@ -36,9 +37,20 @@ const CompletionStats = () => {
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-[#131324] text-white">
+            <LetterGlitch glitchSpeed={50} centerVignette={true} outerVignette={false} smooth={true} />
             <Navbar />
-
-            <div className="bg-[#101828] rounded-2xl shadow-lg p-10 w-full max-w-xl border-2 border-cyan-400">
+            <div
+                style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    zIndex: 2,
+                }}
+                className="bg-[#101828] rounded-2xl shadow-lg p-10 w-full max-w-xl border-2 border-cyan-400">
                 <h1 className="text-3xl font-bold text-cyan-400 mb-6 text-center">🎉 Congratulations!</h1>
                 <p className="text-lg mb-8 text-center">You completed all coding levels!</p>
                 <div className="space-y-4 mb-8">
@@ -72,7 +84,7 @@ const CompletionStats = () => {
                     Go to Home
                 </button>
             </div>
-        </div>
+        </div >
     );
 };
 

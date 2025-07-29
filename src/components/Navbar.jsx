@@ -42,12 +42,12 @@ const Navbar = () => {
                 className={`fixed top-0 left-0 h-full w-96 bg-[#101828] border-dashed border-2 border-[#00d3f3] text-white shadow-lg transform transition-transform duration-300 ease-in-out z-40 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
             >
                 <div className="p-6 mt-10">
-                    <h2 className="text-2xl font-bold mb-6">Questions</h2>
+                    <h2 className="text-2xl font-bold mb-6">Reverse Code</h2>
                     <ul className="flex flex-col gap-y-3">
-                        <a href='/code/easy' className="hover:text-gray-300 hover:scale-105 transition-all cursor-pointer text-">Easy</a>
-                        <a href='/code/medium' className="hover:text-gray-300 hover:scale-105 transition-all cursor-pointer">Medium</a>
-                        <a href='/code/hard' className="hover:text-gray-300 hover:scale-105 transition-all cursor-pointer">Hard</a>
-                        <a href='/completed' className="hover:text-gray-300 hover:scale-105 transition-all cursor-pointer">Progress</a>
+                        <a href='/code/easy' className="hover:text-gray-300 hover:scale-105 transition-all cursor-pointer text-green-400 font-bold">Sum Of 1 to N</a>
+                        <a href='/code/medium' className="hover:text-gray-300 hover:scale-105 transition-all cursor-pointer text-yellow-400 font-bold">Nth Fibonacci Series</a>
+                        <a href='/code/hard' className="hover:text-gray-300 hover:scale-105 transition-all cursor-pointer text-red-400 font-bold">N is an Armstrong number ?</a>
+                        <a href='/completed' className="hover:text-gray-300 hover:scale-105 transition-all cursor-pointer text-blue-400 font-bold">Progress</a>
                     </ul>
                 </div>
             </div>

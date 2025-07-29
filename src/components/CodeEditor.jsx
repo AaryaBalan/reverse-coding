@@ -80,6 +80,8 @@ const CodeEditor = ({ inputs, level, time }) => {
             // setError to error
             if (!data.run.stdout.length) {
                 setError(data.run.stderr);
+            }else{
+                setError('');
             }
 
             return data.run.stdout.length ? data.run.output : data.run.stderr;
@@ -91,6 +93,8 @@ const CodeEditor = ({ inputs, level, time }) => {
     const runTests = async () => {
         setIsExecuting(true);
         const results = [];
+
+        console.log(editorCode, language, inputs);
 
         for (let i = 0; i < inputs.length; i++) {
             const input = inputs[i];
@@ -165,7 +169,6 @@ const CodeEditor = ({ inputs, level, time }) => {
         dom.addEventListener('keydown', handleKeyDown);
         return () => dom.removeEventListener('keydown', handleKeyDown);
     }, [editorCode]);
-    console.log(outputResults)
 
     return (
         <div className="w-1/2 space-y-4 flex flex-col max-h-[calc(100vh-100px)] overflow-hidden border-2 border-dashed border-[#00d3f3]">
@@ -215,13 +218,13 @@ const CodeEditor = ({ inputs, level, time }) => {
                 </button>
             </div>
 
-            {error.length !== 0 && (
+            {(error.length !== 0 && isExecuting === false) && (
                 <div className="bg-[#101828] text-white mt-4 p-4 rounded-lg max-h-96 overflow-auto border border-cyan-400">
                     <pre className='text-red-400'>{error}</pre>
                 </div>
             )}
 
-            {(outputResults.length > 0 && error.length === 0) && (
+            {(outputResults.length > 0 && error.length === 0 && isExecuting === false) && (
                 <div className="bg-[#101828] text-white mt-4 p-4 rounded-lg max-h-96 overflow-auto border border-cyan-400">
                     {outputResults.map((res, index) => (
                         <pre key={index} className="flex flex-col gap-y-2 text-lg bg-gray-800 p-4 border border-gray-700 my-5 rounded-md">
